@@ -19,5 +19,4 @@
         <item android:title="Timetables"
             android:id="@+id/nav_timetables" />
     </group>
-
 </menu>
