@@ -1,9 +1,11 @@
 package loughboroughuniversity.madcinema;
 
 import android.app.FragmentManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,12 +16,31 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    //Array to hold list of locations
+    public ArrayList<String> locationArray = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FetchLocationData locationsGet = new FetchLocationData();
+        locationsGet.execute();
+
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -106,5 +127,89 @@ public class HomeActivity extends AppCompatActivity
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public class FetchLocationData extends AsyncTask<Void, Void, String> {
+        public String CONST_LOCATIONURL = "http://ac-portal.uk/mad/locationInfoOut.php";
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            // Will contain the raw JSON response as a string.
+            String resultJson = null;
+
+            try {
+                // Construct the URL
+                URL url = new URL(CONST_LOCATIONURL);
+
+                // Create the request and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+                resultJson = buffer.toString();
+                return resultJson;
+            } catch (IOException e) {
+                Log.e("PlaceholderFragment", "Error ", e);
+                // If the code didn't successfully get data
+                return null;
+            } finally{
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                JSONObject json = new JSONObject(s);
+
+                //add locations to list
+                JSONArray locations = json.getJSONArray("locations");
+                for(int i = 0; i < locations.length(); i++){
+                    JSONObject location = locations.getJSONObject(i);
+                    locationArray.add(location.getString("Name"));
+                }
+
+            } catch (JSONException e){
+                Log.d("JSON Exception", e.getLocalizedMessage());
+            }
+
+            Log.i("json", s);
+        }
     }
 }
