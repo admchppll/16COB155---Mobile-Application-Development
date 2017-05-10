@@ -202,13 +202,12 @@ public class HomeActivity extends AppCompatActivity
                 JSONArray locations = json.getJSONArray("locations");
                 for(int i = 0; i < locations.length(); i++){
                     JSONObject location = locations.getJSONObject(i);
-                    locationArray.add(location.getString("Name"));
+                    locationArray.add(location.getString("Name") + "\n" + location.getString("Address") + "," + location.getString("Postcode"));
                 }
 
             } catch (JSONException e){
                 Log.d("JSON Exception", e.getLocalizedMessage());
             }
-
             Log.i("json", s);
         }
     }
