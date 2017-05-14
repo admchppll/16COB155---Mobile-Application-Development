@@ -16,10 +16,8 @@ public class FilmScreenFragment extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         myView = inflater.inflate(R.layout.film_layout, container, false);
 
         return myView;
-
     }
 }

@@ -33,13 +33,17 @@ public class HomeActivity extends AppCompatActivity
 
     //Array to hold list of locations
     public ArrayList<String> locationArray = new ArrayList<String>();
-
+    public ArrayList<String> timetableArray = new ArrayList<String>();
+    public ArrayList<String> timetableSubArray = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FetchLocationData locationsGet = new FetchLocationData();
         locationsGet.execute();
+
+        FetchTimetableData timetablGet = new FetchTimetableData();
+        timetablGet.execute();
 
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -208,6 +212,91 @@ public class HomeActivity extends AppCompatActivity
             } catch (JSONException e){
                 Log.d("JSON Exception", e.getLocalizedMessage());
             }
+            Log.i("json", s);
+        }
+    }
+
+    public class FetchTimetableData extends AsyncTask<Void, Void, String> {
+        public String CONST_TIME_OUT_URL = "http://ac-portal.uk/mad/filmTimeOut.php";
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            // Will contain the raw JSON response as a string.
+            String resultJson = null;
+
+            try {
+                // Construct the URL
+                URL url = new URL(CONST_TIME_OUT_URL);
+
+                // Create the request and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+                resultJson = buffer.toString();
+                return resultJson;
+            } catch (IOException e) {
+                Log.e("PlaceholderFragment", "Error ", e);
+                // If the code didn't successfully get data
+                return null;
+            } finally{
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                JSONObject json = new JSONObject(s);
+
+                //add locations to list
+                JSONArray times = json.getJSONArray("filmTime");
+                for(int i = 0; i < times.length(); i++){
+                    JSONObject timeArray = times.getJSONObject(i);
+                    timetableArray.add(timeArray.getString("FilmName"));
+                    timetableSubArray.add("Time: "+timeArray.getString("Time") +" Location: "+timeArray.getString("LocationName"));
+
+                }
+
+            } catch (JSONException e){
+                Log.d("JSON Exception", e.getLocalizedMessage());
+            }
+
             Log.i("json", s);
         }
     }
