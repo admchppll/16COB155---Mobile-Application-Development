@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <ListView
@@ -11,15 +12,35 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <EditText
-        android:id="@+id/Test"
+    <TextView
+        android:id="@+id/dateOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:enabled="false"
-        android:inputType="textPersonName"
-        android:text="TEst" />
+        android:text="TextView"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/prevDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="Prev"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/nextDateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/prevDateButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="Next"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
