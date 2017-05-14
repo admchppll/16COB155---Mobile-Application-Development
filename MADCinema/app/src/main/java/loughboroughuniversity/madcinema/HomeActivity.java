@@ -33,8 +33,8 @@ public class HomeActivity extends AppCompatActivity
 
     //Array to hold list of locations
     public ArrayList<String> locationArray = new ArrayList<String>();
-    public ArrayList<String> timetableArray = new ArrayList<String>();
-    public ArrayList<String> timetableSubArray = new ArrayList<String>();
+
+    JSONArray times = new JSONArray();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -219,7 +219,6 @@ public class HomeActivity extends AppCompatActivity
     public class FetchTimetableData extends AsyncTask<Void, Void, String> {
         public String CONST_TIME_OUT_URL = "http://ac-portal.uk/mad/filmTimeOut.php";
 
-
         @Override
         protected String doInBackground(Void... params) {
             // These two need to be declared outside the try/catch
@@ -285,13 +284,8 @@ public class HomeActivity extends AppCompatActivity
                 JSONObject json = new JSONObject(s);
 
                 //add locations to list
-                JSONArray times = json.getJSONArray("filmTime");
-                for(int i = 0; i < times.length(); i++){
-                    JSONObject timeArray = times.getJSONObject(i);
-                    timetableArray.add(timeArray.getString("FilmName"));
-                    timetableSubArray.add("Time: "+timeArray.getString("Time") +" Location: "+timeArray.getString("LocationName"));
+                times = json.getJSONArray("filmTime");
 
-                }
 
             } catch (JSONException e){
                 Log.d("JSON Exception", e.getLocalizedMessage());
