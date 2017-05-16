@@ -3,6 +3,7 @@ package loughboroughuniversity.madcinema;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
@@ -39,6 +40,8 @@ import java.util.concurrent.ExecutionException;
 
 import javax.security.auth.login.LoginException;
 
+import static android.R.attr.value;
+import static android.content.Context.MODE_PRIVATE;
 import static android.provider.Telephony.Mms.Part.FILENAME;
 
 /**
@@ -54,17 +57,19 @@ public class FilmScreenFragment extends Fragment {
     String movieID = "2";
     ImageView moviePoster;
     Button btnFave, btnShare;
-    String videoID;
+    String videoID, userName, filmName;
+    TextView movieDescriptionTextView;
 
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 //        textOut = "Test";
         Log.i("myTag", "onCreateView started");
+        userName = "no";
 
         myView = inflater.inflate(R.layout.film_layout, container, false);
 
-        TextView movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
+        movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
         movieDescriptionTextView.setText(textOut);
 
         btnFave = (Button) myView.findViewById(R.id.btnFave);
@@ -202,8 +207,11 @@ public class FilmScreenFragment extends Fragment {
             try {
                 JSONObject json = new JSONObject(s);
                 //add locations to list
+
                 JSONArray filmInfo = json.getJSONArray("filmInfo");
                 JSONObject movieDetailObject = filmInfo.getJSONObject(0);
+
+                filmName = movieDetailObject.getString("Name");
 
                 textOut = movieDetailObject.getString("Description");
                 movieDescriptionTextView.setText(textOut);
@@ -220,15 +228,15 @@ public class FilmScreenFragment extends Fragment {
         }
     }
     public void saveFilm() {
-        String FILENAME = "mad_fave_file";
-        try {
-            FileOutputStream fOut = getActivity().openFileOutput(FILENAME, getActivity().MODE_PRIVATE);
-            String str = "test_load_data";
-            fOut.write(str.getBytes());
-            fOut.close();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        SharedPreferences myPref = getActivity().getSharedPreferences("fave_films",MODE_PRIVATE);
+        SharedPreferences.Editor myEditor = myPref.edit();
+        myEditor.clear();
+        myEditor.putString("filmname", filmName);// or putDouble, putString, etc…
+        myEditor.commit();
+    }
+    public void loadFilm(){
+        SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);
+        userName = myPref.getString("filmname", "");
     }
     public void shareFilm() { //Share youtube video of film
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
