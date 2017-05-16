@@ -312,7 +312,7 @@ public class HomeActivity extends AppCompatActivity
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_stat_name)
                         .setContentTitle("MAD Cinema")
                         .setContentText("New movie released today!");
 
