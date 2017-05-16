@@ -1,10 +1,15 @@
 package loughboroughuniversity.madcinema;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -38,6 +43,7 @@ public class TimetableScreenFragment extends Fragment {
     public ArrayList<String> dateArray = new ArrayList<String>();
     public ArrayList<String> timetableArray = new ArrayList<String>();
     public ArrayList<String> timetableSubArray = new ArrayList<String>();
+    private GestureDetectorCompat mDetector;
     int currentDateValue = 0;
     TextView dateOut;
     @Nullable
@@ -55,10 +61,39 @@ public class TimetableScreenFragment extends Fragment {
 
         getInfoForDate();
         timeTableViewPopulate();
+        myView.setOnTouchListener(new OnSwipeTouchListener(myView.getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                currentDateValue= currentDateValue-1;
+                if(currentDateValue <= -1){
+                    currentDateValue = dateArray.size()-1;
+                }
+
+
+                dateOut.setText(dateArray.get(currentDateValue));
+                getInfoForDate();
+                timeTableViewPopulate();
+            }
+            public void onSwipeRight(){
+                currentDateValue= currentDateValue-1;
+                if(currentDateValue <= -1){
+                    currentDateValue = dateArray.size()-1;
+                }
+
+
+                dateOut.setText(dateArray.get(currentDateValue));
+                getInfoForDate();
+                timeTableViewPopulate();
+
+
+            }
+        });
 
         return myView;
 
     }
+
+
 
     public void formatJsonObject(){
         HomeActivity home = (HomeActivity)getActivity();
