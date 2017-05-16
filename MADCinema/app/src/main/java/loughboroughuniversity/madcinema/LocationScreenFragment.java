@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -34,7 +35,7 @@ import org.json.JSONObject;
 
 public class LocationScreenFragment extends Fragment {
     View myView;
-
+    ArrayList<LocationItem> locations;
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,28 +46,21 @@ public class LocationScreenFragment extends Fragment {
         //get HomeActivity context
         HomeActivity home = (HomeActivity)getActivity();
 
-        //output results to list
-        ArrayAdapter<String> listViewAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                home.locationArray
-        );
+        ArrayAdapter<LocationItem> adapter = new LocationListAdapter(getActivity(), 0, home.locationArray);
+        listView.setAdapter(adapter);
 
-        listView.setAdapter(listViewAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String info = ((TextView) view).getText().toString();
-                info = info.substring(info.indexOf("\n")+1);
+        //listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //    @Override
+        //    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        //        String info = ((TextView) view).getText().toString();
+        //        info = info.substring(info.indexOf("\n")+1);
+        //        Uri gMaps = Uri.parse("geo:0,0?q="+info);
+        //        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gMaps);
+        //        mapIntent.setPackage("com.google.android.apps.maps");
+        //        startActivity(mapIntent);
+        //    }
+        //});
 
-                Uri gMaps = Uri.parse("geo:0,0?q="+info);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gMaps);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-            }
-        });
-
-        Log.d("CUSTOM", "Got here");
         return myView;
     }
 }

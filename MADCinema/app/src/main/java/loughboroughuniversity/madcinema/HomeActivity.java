@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     //Array to hold list of locations
-    public ArrayList<String> locationArray = new ArrayList<String>();
+    public ArrayList<LocationItem> locationArray = new ArrayList<LocationItem>();
 
     JSONArray times = new JSONArray();
     @Override
@@ -220,7 +220,9 @@ public class HomeActivity extends AppCompatActivity
                 JSONArray locations = json.getJSONArray("locations");
                 for(int i = 0; i < locations.length(); i++){
                     JSONObject location = locations.getJSONObject(i);
-                    locationArray.add(location.getString("Name") + "\n" + location.getString("Address") + "," + location.getString("Postcode"));
+
+                    LocationItem temporary = new LocationItem(location.getString("ID"),location.getString("Name"),location.getString("Address") + "," + location.getString("Postcode"));
+                    locationArray.add(temporary);
                 }
 
             } catch (JSONException e){
