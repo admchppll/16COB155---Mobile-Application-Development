@@ -53,8 +53,12 @@ public class HomeActivity extends AppCompatActivity
                         , new HomeScreenFragment())
                 .commit();
 
+    //GET DATA
+        //-location data
         FetchLocationData locationsGet = new FetchLocationData();
         locationsGet.execute();
+
+        //-get all film data
 
 
         setContentView(R.layout.activity_home);
@@ -166,6 +170,89 @@ public class HomeActivity extends AppCompatActivity
         return true;
     }
 
+    public class fetchMovieData extends AsyncTask<Void, Void, String> {
+        public String movieDetailsURL = "http://ac-portal.uk/mad/filmInfoDetailedOut.php?q=";
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            // Will contain the raw JSON response as a string.
+            String resultJson = null;
+
+            try {
+                // Construct the URL
+                URL url = new URL(movieDetailsURL);
+
+                // Create the request and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+                resultJson = buffer.toString();
+                return resultJson;
+            } catch (IOException e) {
+                Log.e("PlaceholderFragment", "Error ", e);
+                // If the code didn't successfully get data
+                return null;
+            } finally{
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                JSONObject json = new JSONObject(s);
+
+                //add locations to list
+                JSONArray allMovieData = json.getJSONArray("locations");
+                for(int i = 0; i < allMovieData.length(); i++){
+                    JSONObject location = allMovieData.getJSONObject(i);
+
+                    LocationItem temporary = new LocationItem(location.getString("ID"),location.getString("Name"),location.getString("Address") + "," + location.getString("Postcode"));
+                    locationArray.add(temporary);
+                }
+
+            } catch (JSONException e){
+                Log.d("JSON Exception", e.getLocalizedMessage());
+            }
+            Log.i("json", s);
+        }
+    }
 
     public class FetchLocationData extends AsyncTask<Void, Void, String> {
         public String CONST_LOCATIONURL = "http://ac-portal.uk/mad/locationInfoOut.php";
