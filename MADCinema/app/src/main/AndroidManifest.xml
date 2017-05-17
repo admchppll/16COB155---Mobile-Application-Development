@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="loughboroughuniversity.madcinema">
 
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -19,6 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".DownloadService"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
+    <service android:name="com.vogella.android.service.receiver.DownloadService" >
+    </service>
+
 
 </manifest>
