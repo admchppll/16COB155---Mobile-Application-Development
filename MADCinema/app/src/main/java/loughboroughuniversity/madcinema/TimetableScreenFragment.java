@@ -3,6 +3,7 @@ package loughboroughuniversity.madcinema;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -89,7 +90,7 @@ public class TimetableScreenFragment extends Fragment {
 
                 dateOut.setText(dateArray.get(currentDateValue));
                 getInfoForDate();
-//                timeTableViewPopulate();
+                timeTableViewPopulate();
 
 
             }
@@ -225,7 +226,21 @@ public class TimetableScreenFragment extends Fragment {
                 android.R.layout.simple_list_item_2,
                 new String[] {"title", "subtitle"},
                 new int[] {android.R.id.text1,
-                        android.R.id.text2});
+                        android.R.id.text2}){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view =super.getView(position, convertView, parent);
+
+                TextView textView=(TextView) view.findViewById(android.R.id.text1);
+                TextView textView2 = (TextView) view.findViewById(android.R.id.text2);
+            /*YOUR CHOICE OF COLOR*/
+                textView.setTextColor(Color.BLACK);
+                textView2.setTextColor(Color.BLACK);
+
+                return view;
+            }
+
+        };
 
         list.setAdapter(adapter);
 
