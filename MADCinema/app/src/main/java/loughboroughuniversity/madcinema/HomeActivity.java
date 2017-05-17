@@ -7,8 +7,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.icu.util.Calendar;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
@@ -45,6 +47,7 @@ public class HomeActivity extends AppCompatActivity
 
     //Array to hold list of locations
     public ArrayList<LocationItem> locationArray = new ArrayList<LocationItem>();
+    String filmScreen = null;
 
     JSONArray times = new JSONArray();
     @Override
@@ -75,6 +78,17 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Loads Film screen if notification clicked on
+        Intent newint = getIntent();
+        filmScreen = newint.getStringExtra(DownloadService.EXTRA_FILM);
+        if (filmScreen != null){
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame
+                            , new FilmListScreenFragment())
+                    .commit();
+        }
+
 
         //Runs Service Automatically Every 60 Minutes
         Calendar cal = Calendar.getInstance();

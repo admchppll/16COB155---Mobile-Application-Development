@@ -30,6 +30,7 @@ import loughboroughuniversity.madcinema.HomeActivity;
 import loughboroughuniversity.madcinema.R;
 
 public class DownloadService extends Service {
+    public static String EXTRA_FILM;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -70,6 +71,7 @@ public class DownloadService extends Service {
                         .setContentText("New movie might of been released today!");
 
         Intent resultIntent = new Intent(this, HomeActivity.class);
+        resultIntent.putExtra(EXTRA_FILM, "FILM");
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(HomeActivity.class);
