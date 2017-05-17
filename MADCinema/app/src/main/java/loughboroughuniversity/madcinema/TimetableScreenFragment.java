@@ -2,6 +2,8 @@ package loughboroughuniversity.madcinema;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -23,6 +25,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +51,8 @@ public class TimetableScreenFragment extends Fragment {
     public ArrayList<String> dateArray = new ArrayList<String>();
     public ArrayList<String> timetableArray = new ArrayList<String>();
     public ArrayList<String> timetableSubArray = new ArrayList<String>();
-    private GestureDetectorCompat mDetector;
+    JSONArray times = new JSONArray();
+
     int currentDateValue = 0;
     TextView dateOut;
     @Nullable
@@ -51,16 +60,13 @@ public class TimetableScreenFragment extends Fragment {
 
         myView = inflater.inflate(timetable_layout, container, false);
 
+        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        FetchTimetableData timetableGet = new FetchTimetableData();
+        timetableGet.execute();
 
         nextDateButtonClick();
         prevDateButtonClick();
-        formatJsonObject();
-        dateOut = (TextView) myView.findViewById(id.dateOut);
 
-        dateOut.setText(dateArray.get(currentDateValue));
-
-        getInfoForDate();
-        timeTableViewPopulate();
         myView.setOnTouchListener(new OnSwipeTouchListener(myView.getContext()) {
             @Override
             public void onSwipeLeft() {
@@ -83,7 +89,7 @@ public class TimetableScreenFragment extends Fragment {
 
                 dateOut.setText(dateArray.get(currentDateValue));
                 getInfoForDate();
-                timeTableViewPopulate();
+//                timeTableViewPopulate();
 
 
             }
@@ -94,10 +100,10 @@ public class TimetableScreenFragment extends Fragment {
     }
 
 
-
     public void formatJsonObject(){
         HomeActivity home = (HomeActivity)getActivity();
-        JSONArray timeArray = home.times;
+        JSONArray timeArray = times;
+        dateArray.clear();
         for(int i= 0;i<timeArray.length();i++){
             JSONObject time = null;
             try {
@@ -119,7 +125,7 @@ public class TimetableScreenFragment extends Fragment {
 
     public void getInfoForDate() {
         HomeActivity home = (HomeActivity) getActivity();
-        JSONArray timeArray = home.times;
+        JSONArray timeArray = times;
         timetableArray = new ArrayList<String>();
         timetableSubArray = new ArrayList<String>();
         JSONObject time = null;
@@ -224,6 +230,89 @@ public class TimetableScreenFragment extends Fragment {
         list.setAdapter(adapter);
 
     }
+    public class FetchTimetableData extends AsyncTask<Void, Void, String> {
+        public String CONST_TIME_OUT_URL = "http://ac-portal.uk/mad/filmTimeOut.php";
 
+        @Override
+        protected String doInBackground(Void... params) {
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            // Will contain the raw JSON response as a string.
+            String resultJson = null;
+
+            try {
+                // Construct the URL
+                URL url = new URL(CONST_TIME_OUT_URL);
+
+                // Create the request and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+                resultJson = buffer.toString();
+                return resultJson;
+            } catch (IOException e) {
+                Log.e("PlaceholderFragment", "Error ", e);
+                // If the code didn't successfully get data
+                return null;
+            } finally{
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e("PlaceholderFragment", "Error closing stream", e);
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            try {
+                JSONObject json = new JSONObject(s);
+
+                //add locations to list
+                times = json.getJSONArray("filmTime");
+                formatJsonObject();
+                dateOut = (TextView) myView.findViewById(id.dateOut);
+
+                dateOut.setText(dateArray.get(currentDateValue));
+
+                getInfoForDate();
+                timeTableViewPopulate();
+
+            } catch (JSONException e){
+                Log.d("JSON Exception", e.getLocalizedMessage());
+            }
+
+            Log.i("json", s);
+        }
+    }
 
 }

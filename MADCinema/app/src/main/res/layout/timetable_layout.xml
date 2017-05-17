@@ -16,31 +16,38 @@
         android:id="@+id/dateOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:text="TextView"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:layout_alignBaseline="@+id/prevDateButton"
+        android:layout_alignBottom="@+id/prevDateButton"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/prevDateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:text="Prev"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="11dp" />
 
     <Button
         android:id="@+id/nextDateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/prevDateButton"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:text="Next"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginRight="13dp"
+        android:layout_marginEnd="13dp"
+        android:layout_alignBaseline="@+id/dateOut"
+        android:layout_alignBottom="@+id/dateOut"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
