@@ -169,6 +169,17 @@ public class HomeActivity extends AppCompatActivity
                     .replace(R.id.content_frame
                             , new TimetableScreenFragment())
                     .commit();
+        }else if (id == R.id.favourite ) {
+//            fragmentManager.beginTransaction()
+//                    .replace(R.id.content_frame
+//                            , new TimetableScreenFragment())
+//                    .commit();
+        }
+        else if (id == R.id.user_guide ) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame
+                            , new UserGuideFragment())
+                    .commit();
         }
 
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
