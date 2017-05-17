@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,17 +52,20 @@ public class FilmScreenFragment extends Fragment {
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        textOut = "Test";
-        Log.i("myTag", "onCreateView started");
         userName = "no";
 
         myView = inflater.inflate(R.layout.film_layout, container, false);
 
-        //set the movie description to the default text;
+        //initiate and set movie poster to a default image
+        moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
+        moviePoster.setImageResource(0);
+
+        //initiate and set movie decryption to a default description("Loading")
         movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
         movieDescriptionTextView.setText(textOut);
 
-//        //set listener to floating share button
+
+        //set listener to floating share button
         floatingBtnShare = (FloatingActionButton) myView.findViewById(R.id.floatingBtnShare);
         floatingBtnShare.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,7 +74,7 @@ public class FilmScreenFragment extends Fragment {
             }
         });
 
-        //set listener to favourite button
+        //set listener to floating favourite button
         floatingBtnFav = (FloatingActionButton) myView.findViewById(R.id.floatingBtnFav);
         floatingBtnFav.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,29 +82,6 @@ public class FilmScreenFragment extends Fragment {
                 saveFilm();
             }
         });
-
-
-        //set listener to favourite button
-//        btnFave = (Button) myView.findViewById(R.id.btnFave);
-//        btnFave.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) { //Writes Film to Phone
-//                saveFilm();
-//            }
-//        });
-
-
-//        btnShare = (Button) myView.findViewById(R.id.btnShare);
-//        btnShare.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) { //Writes Film to Phone
-//                shareFilm();
-//            }
-//        });
-
-
-        moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
-        moviePoster.setImageResource(0);
 
         GetMovieDetails movieDetails = new GetMovieDetails();
         movieDetails.execute();
@@ -207,11 +189,12 @@ public class FilmScreenFragment extends Fragment {
 
         }
 
-        //onPostExcecute of the GetMovieDetails async task
+        //onPostExecute of the GetMovieDetails async task
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            //reference all the objects
             TextView movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
-
+            RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
 
             try {
                 JSONObject json = new JSONObject(s);
@@ -220,10 +203,11 @@ public class FilmScreenFragment extends Fragment {
                 JSONArray filmInfo = json.getJSONArray("filmInfo");
                 JSONObject movieDetailObject = filmInfo.getJSONObject(0);
 
-                filmName = movieDetailObject.getString("Name");
 
                 textOut = movieDetailObject.getString("Description");
                 movieDescriptionTextView.setText(textOut);
+
+                movieRatingBar.setRating(Float.valueOf(movieDetailObject.getString("Rating")));
 
                 videoID = movieDetailObject.getString("Trailer");
 
