@@ -178,7 +178,35 @@ public class TimetableScreenFragment extends Fragment {
 
     public void timeTableViewPopulate(){
         ListView list = (ListView) myView.findViewById(id.timeTableList);
-        
+
+        list.setOnTouchListener(new OnSwipeTouchListener(list.getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                currentDateValue= currentDateValue-1;
+                if(currentDateValue <= -1){
+                    currentDateValue = dateArray.size()-1;
+                }
+
+
+                dateOut.setText(dateArray.get(currentDateValue));
+                getInfoForDate();
+                timeTableViewPopulate();
+            }
+            public void onSwipeRight(){
+                currentDateValue= currentDateValue-1;
+                if(currentDateValue <= -1){
+                    currentDateValue = dateArray.size()-1;
+                }
+
+
+                dateOut.setText(dateArray.get(currentDateValue));
+                getInfoForDate();
+                timeTableViewPopulate();
+
+
+            }
+        });
+
         List<Map<String,String>> data = new ArrayList<Map<String,String>>();
         for (int i=0; i<timetableArray.size(); i++) {
             Map<String, String> datum = new HashMap<String, String>(2);
