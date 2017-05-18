@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static loughboroughuniversity.madcinema.R.*;
 import static loughboroughuniversity.madcinema.R.layout.timetable_layout;
@@ -50,6 +51,7 @@ import static loughboroughuniversity.madcinema.R.layout.timetable_layout;
 public class TimetableScreenFragment extends Fragment {
     View myView;
     public ArrayList<String> dateArray = new ArrayList<String>();
+    public ArrayList<String> hiddenDateArray = new ArrayList<String>();
     public ArrayList<String> timetableArray = new ArrayList<String>();
     public ArrayList<String> timetableSubArray = new ArrayList<String>();
     JSONArray times = new JSONArray();
@@ -102,13 +104,28 @@ public class TimetableScreenFragment extends Fragment {
 
 
     public void formatJsonObject(){
-        HomeActivity home = (HomeActivity)getActivity();
         JSONArray timeArray = times;
         dateArray.clear();
+        String favouriteLocation = LocationItem.getName();
         for(int i= 0;i<timeArray.length();i++){
+
             JSONObject time = null;
             try {
                 time = timeArray.getJSONObject(i);
+                boolean isFavouriteLocationSelected = false;
+                if(favouriteLocation.equals("")) {
+                    isFavouriteLocationSelected = true;
+                }else {
+                    JSONArray filmsJSONArray = time.getJSONArray("film");
+                    for (int x = 0; x < filmsJSONArray.length(); x++) {
+                        JSONObject filmObject = filmsJSONArray.getJSONObject(x);
+                        if (favouriteLocation.equals(filmObject.getString("LocationName"))) {
+                            isFavouriteLocationSelected = true;
+                            break;
+                        }
+                    }
+                }
+
                 Date OutputDate = null;
                 String outputDateString = "TEST";
                 try {
@@ -117,7 +134,10 @@ public class TimetableScreenFragment extends Fragment {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                dateArray.add(outputDateString);
+                if(isFavouriteLocationSelected) {
+                    dateArray.add(outputDateString);
+                }
+                hiddenDateArray.add(outputDateString);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -125,18 +145,30 @@ public class TimetableScreenFragment extends Fragment {
     }
 
     public void getInfoForDate() {
-        HomeActivity home = (HomeActivity) getActivity();
         JSONArray timeArray = times;
         timetableArray = new ArrayList<String>();
         timetableSubArray = new ArrayList<String>();
+        String favouriteLocation = LocationItem.getName();
         JSONObject time = null;
         try {
-            time = timeArray.getJSONObject(currentDateValue);
+            int currentTimeInt = 0;
+            for (int y=0; y<hiddenDateArray.size();y++){
+                if(hiddenDateArray.get(y).equals(dateArray.get(currentDateValue))){
+                    currentTimeInt = y;
+                    break;
+                }
+            }
+            time = timeArray.getJSONObject(currentTimeInt);
             JSONArray filmsJSONArray = time.getJSONArray("film");
             for (int x = 0; x < filmsJSONArray.length(); x++) {
                 JSONObject filmOut = filmsJSONArray.getJSONObject(x);
-                timetableArray.add(filmOut.getString("FilmName"));
-                timetableSubArray.add("Location: "+filmOut.getString("LocationName") +" Time: "+filmOut.getString("Time"));
+                if(favouriteLocation.equals("")) {
+                    timetableArray.add(filmOut.getString("FilmName"));
+                    timetableSubArray.add("Location: " + filmOut.getString("LocationName") + " Time: " + filmOut.getString("Date"));
+                }else if (favouriteLocation.equals(filmOut.getString("LocationName"))){
+                    timetableArray.add(filmOut.getString("FilmName"));
+                    timetableSubArray.add("Location: " + filmOut.getString("LocationName") + " Time: " + filmOut.getString("Date"));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

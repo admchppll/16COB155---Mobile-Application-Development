@@ -16,7 +16,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class LocationItem {
     private String ID = "";
-    private String Name = "";
+    private static String Name = "";
     private String Address = "";
     private Boolean Preferred = false;
 
@@ -30,8 +30,8 @@ public class LocationItem {
         return this.ID;
     }
 
-    public String getName(){
-        return this.Name;
+    public static String getName(){
+        return Name;
     }
 
     public String getAddress(){
