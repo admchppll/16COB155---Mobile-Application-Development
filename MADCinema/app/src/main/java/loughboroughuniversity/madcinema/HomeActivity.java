@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity
 
     //Array to hold list of locations
     public ArrayList<LocationItem> locationArray = new ArrayList<LocationItem>();
+    public ArrayList<FilmObject> allFilmObjectsArray = new ArrayList<FilmObject>();
     String filmScreen = null;
 
 
@@ -53,10 +54,13 @@ public class HomeActivity extends AppCompatActivity
                         , new HomeScreenFragment())
                 .commit();
 
-    //GET DATA
+        //GET DATA
         //-location data
         FetchLocationData locationsGet = new FetchLocationData();
         locationsGet.execute();
+
+        fetchMovieData movieDataGet = new fetchMovieData();
+        movieDataGet.execute();
 
         //-get all film data
 
@@ -77,7 +81,7 @@ public class HomeActivity extends AppCompatActivity
         //Loads Film screen if notification clicked on
         Intent newint = getIntent();
         filmScreen = newint.getStringExtra(DownloadService.EXTRA_FILM);
-        if (filmScreen != null){
+        if (filmScreen != null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
                             , new FilmListScreenFragment())
@@ -92,7 +96,7 @@ public class HomeActivity extends AppCompatActivity
         PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                60*60*1000, pintent);
+                60 * 60 * 1000, pintent);
 
     }
 
@@ -164,31 +168,30 @@ public class HomeActivity extends AppCompatActivity
                             , new LocationScreenFragment())
                     .commit();
 
-        } else if (id == R.id.nav_timetables ) {
+        } else if (id == R.id.nav_timetables) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
                             , new TimetableScreenFragment())
                     .commit();
-        }else if (id == R.id.favourite ) {
+        } else if (id == R.id.favourite) {
 //            fragmentManager.beginTransaction()
 //                    .replace(R.id.content_frame
 //                            , new TimetableScreenFragment())
 //                    .commit();
-        }
-        else if (id == R.id.user_guide ) {
+        } else if (id == R.id.user_guide) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
                             , new UserGuideFragment())
                     .commit();
         }
 
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     public class fetchMovieData extends AsyncTask<Void, Void, String> {
-        public String movieDetailsURL = "http://ac-portal.uk/mad/filmInfoDetailedOut.php?q=";
+        public String movieDetailsURL = "http://ac-portal.uk/mad/filmInformation.php";
 
 
         @Override
@@ -234,7 +237,7 @@ public class HomeActivity extends AppCompatActivity
                 Log.e("PlaceholderFragment", "Error ", e);
                 // If the code didn't successfully get data
                 return null;
-            } finally{
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -251,20 +254,35 @@ public class HomeActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            Log.i("jitz", "fetchMovieData->onPostExecute");
 
             try {
-                JSONObject json = new JSONObject(s);
+                JSONObject allFilmsJson = new JSONObject(s);
+                JSONArray films = allFilmsJson.getJSONArray("films");
+                Log.i("jitz", "films: " + films.toString());
 
-                //add locations to list
-                JSONArray allMovieData = json.getJSONArray("locations");
-                for(int i = 0; i < allMovieData.length(); i++){
-                    JSONObject location = allMovieData.getJSONObject(i);
-
-                    LocationItem temporary = new LocationItem(location.getString("ID"),location.getString("Name"),location.getString("Address") + "," + location.getString("Postcode"));
-                    locationArray.add(temporary);
+                JSONObject film;
+                FilmObject temporary;
+                for (int i = 0; i < films.length(); i++) {
+                    film = films.getJSONObject(i);
+                    Log.i("jitz", "film: " + film.toString());
+                    Log.i("jitz", "film.getString(\"name\")" + film.getString("Name"));
+                    //create a temporary Film object that will then be added to an arrayList(allFilmsObjectArray)
+                    temporary = new FilmObject();
+                    //set all the properties of temporary FilmObject
+                    temporary.id = Integer.parseInt(film.getString("ID"));
+                    temporary.name = film.getString("Name");
+                    temporary.description = film.getString("Description");
+                    temporary.rating = Integer.parseInt(film.getString("Rating"));
+                    temporary.age = Integer.parseInt(film.getString("Age"));
+                    temporary.trailer = film.getString("Trailer");
+                    temporary.img = film.getString("Img");
+                    Log.i("jitz", "--" + temporary.name);//this is not printing anything in the log why????
+                    //add the temporary Film object to the arrayList(allFilmsObjectArray)
+                    allFilmObjectsArray.add(temporary);
                 }
 
-            } catch (JSONException e){
+            } catch (JSONException e) {
                 Log.d("JSON Exception", e.getLocalizedMessage());
             }
             Log.i("json", s);
@@ -318,7 +336,7 @@ public class HomeActivity extends AppCompatActivity
                 Log.e("PlaceholderFragment", "Error ", e);
                 // If the code didn't successfully get data
                 return null;
-            } finally{
+            } finally {
                 if (urlConnection != null) {
                     urlConnection.disconnect();
                 }
@@ -341,14 +359,14 @@ public class HomeActivity extends AppCompatActivity
 
                 //add locations to list
                 JSONArray locations = json.getJSONArray("locations");
-                for(int i = 0; i < locations.length(); i++){
+                for (int i = 0; i < locations.length(); i++) {
                     JSONObject location = locations.getJSONObject(i);
 
-                    LocationItem temporary = new LocationItem(location.getString("ID"),location.getString("Name"),location.getString("Address") + "," + location.getString("Postcode"));
+                    LocationItem temporary = new LocationItem(location.getString("ID"), location.getString("Name"), location.getString("Address") + "," + location.getString("Postcode"));
                     locationArray.add(temporary);
                 }
 
-            } catch (JSONException e){
+            } catch (JSONException e) {
                 Log.d("JSON Exception", e.getLocalizedMessage());
             }
             Log.i("json", s);
@@ -379,7 +397,7 @@ public class HomeActivity extends AppCompatActivity
 
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(111,mBuilder.build());
+        mNotificationManager.notify(111, mBuilder.build());
     }
 
 }

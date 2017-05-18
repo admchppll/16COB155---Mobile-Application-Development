@@ -6,7 +6,7 @@ package loughboroughuniversity.madcinema;
 
 public class FilmObject {
     int id;
-    String dame;
+    String name;
     String description;
     int rating;
     int age;
