@@ -27,7 +27,7 @@ public class LocationScreenFragment extends Fragment {
 
         //get HomeActivity context
         HomeActivity home = (HomeActivity)getActivity();
-        getActivity().setTitle("MAD Cinema");
+        getActivity().setTitle("Locations");
 
         ArrayAdapter<LocationItem> adapter = new LocationListAdapter(getActivity(), 0, home.locationArray);
         listView.setAdapter(adapter);

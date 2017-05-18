@@ -7,8 +7,8 @@
         android:id="@+id/timeTableList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="73dp"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/prevDateButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -17,8 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:textSize="30sp"
-        android:layout_alignBaseline="@+id/prevDateButton"
+        android:textSize="26sp"
         android:layout_alignBottom="@+id/prevDateButton"
         android:layout_centerHorizontal="true" />
 
@@ -31,10 +30,10 @@
         android:textStyle="bold"
         android:layout_marginLeft="11dp"
         android:layout_marginStart="11dp"
+        android:layout_marginTop="54dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="11dp" />
+        android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/nextDateButton"
@@ -43,11 +42,20 @@
         android:text="Next"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginRight="13dp"
-        android:layout_marginEnd="13dp"
-        android:layout_alignBaseline="@+id/dateOut"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_alignBottom="@+id/dateOut"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/txtDestination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        android:textSize="30sp" />
 
 </RelativeLayout>

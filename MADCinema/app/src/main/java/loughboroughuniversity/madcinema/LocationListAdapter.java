@@ -30,6 +30,7 @@ import static java.lang.System.in;
 public class LocationListAdapter extends ArrayAdapter<LocationItem> {
     private ArrayList<LocationItem> items;
     private Context context;
+    String locationName;
 
     public LocationListAdapter(Context context, int resource, ArrayList<LocationItem> items){
         super(context, resource, items);
@@ -45,6 +46,7 @@ public class LocationListAdapter extends ArrayAdapter<LocationItem> {
         final View row = inflater.inflate(R.layout.location_list_item, null);
 
         TextView Name = (TextView) row.findViewById(R.id.locationInformation);
+
         Name.setText(location.getName());
 
         ImageButton locationPreference = (ImageButton)row.findViewById(R.id.locationPreferenceButton);
@@ -69,11 +71,23 @@ public class LocationListAdapter extends ArrayAdapter<LocationItem> {
                 alertDialog.setMessage("Are you sure you want to set this as your preferred location?");
                 alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+//                        locationName;
                         // User clicked OK button
                         SharedPreferences myPref = row.getContext().getSharedPreferences("pref_location", MODE_PRIVATE);
                         SharedPreferences.Editor editor = myPref.edit();
                         editor.clear();
                         editor.putString("locationID", LocationID);
+
+                        if (LocationID.equals("0")){
+                            editor.putString("locationName", "Cheddar");
+                        } else if (LocationID.equals("1")){
+                            editor.putString("locationName", "Loughborough");
+                        } else  if (LocationID.equals("2")){
+                            editor.putString("locationName", "Pilkington");
+                        } else if (LocationID.equals("3")){
+                            editor.putString("locationName", "Haslegrave");
+                        }
+
                         editor.commit();
 
                         //remove button from screen

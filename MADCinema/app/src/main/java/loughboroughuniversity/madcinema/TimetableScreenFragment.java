@@ -1,6 +1,7 @@
 package loughboroughuniversity.madcinema;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -59,7 +60,7 @@ public class TimetableScreenFragment extends Fragment {
     String locationPref;
     String prefLocationName;
     int currentDateValue = 0;
-    TextView dateOut;
+    TextView dateOut, txtDestination;
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -73,7 +74,20 @@ public class TimetableScreenFragment extends Fragment {
             prefLocationName = home.locationArray.get(Integer.parseInt(locationPref)).getName();
         }
 
-        getActivity().setTitle("MAD Cinema");
+        getActivity().setTitle("Timetable");
+
+        txtDestination = (TextView) myView.findViewById(R.id.txtDestination);
+        txtDestination.setText(home.getSharedPreferences("pref_location", MODE_PRIVATE).getString("locationName", ""));
+        txtDestination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame
+                                , new LocationScreenFragment()).addToBackStack( "tag2" )
+                        .commit();
+            }
+        });
 
         //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         FetchTimetableData timetableGet = new FetchTimetableData();
@@ -96,9 +110,9 @@ public class TimetableScreenFragment extends Fragment {
                 timeTableViewPopulate();
             }
             public void onSwipeRight(){
-                currentDateValue= currentDateValue-1;
-                if(currentDateValue <= -1){
-                    currentDateValue = dateArray.size()-1;
+                currentDateValue= currentDateValue+1;
+                if(currentDateValue == dateArray.size()){
+                    currentDateValue = 0;
                 }
 
 
@@ -176,10 +190,10 @@ public class TimetableScreenFragment extends Fragment {
                 JSONObject filmOut = filmsJSONArray.getJSONObject(x);
                 if(favouriteLocation.equals("")) {
                     timetableArray.add(filmOut.getString("FilmName"));
-                    timetableSubArray.add("Location: " + filmOut.getString("LocationName") + " Time: " + filmOut.getString("Date"));
+                    timetableSubArray.add("Location: " + filmOut.getString("LocationName") + " Time: " + filmOut.getString("Time"));
                 }else if (favouriteLocation.equals(filmOut.getString("LocationName"))){
                     timetableArray.add(filmOut.getString("FilmName"));
-                    timetableSubArray.add("Location: " + filmOut.getString("LocationName") + " Time: " + filmOut.getString("Date"));
+                    timetableSubArray.add("Location: " + filmOut.getString("LocationName") + " Time: " + filmOut.getString("Time"));
                 }
             }
         } catch (JSONException e) {

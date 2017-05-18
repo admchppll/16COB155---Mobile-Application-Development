@@ -25,7 +25,7 @@ public class UserGuideFragment extends Fragment {
         WebSettings webSettings = userGuide.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        getActivity().setTitle("MAD Cinema");
+        getActivity().setTitle("User Guide");
 
         return myView;
     }
