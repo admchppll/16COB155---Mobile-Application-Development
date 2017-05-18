@@ -10,8 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import java.io.InputStream;
 
@@ -31,14 +34,22 @@ public class FilmListScreenFragment extends Fragment{
 
         home = (HomeActivity)getActivity();
 
+        ListView filmList = (ListView) myView.findViewById(R.id.filmList);
 
-        int movieReference = 0;
+        ArrayAdapter<FilmObject> adapter = new FilmListAdapter(getActivity(), 0, home.allFilmObjectsArray, FilmListScreenFragment.this);
+        filmList.setAdapter(adapter);
+        //int movieReference = 0;
+        //int numberFilms = home.allFilmObjectsArray.size();
+
+//        for (i=0;i<numberFilms;i++){
+//            String imageId = "moviePosterButton" + i);
+//        }
 
 //        imagePosterURL = home.allFilmObjectsArray.get(movieReference).getImg()
-        ImageButton moviePoster1 = (ImageButton) myView.findViewById(R.id.moviePosterButton1);
+        /*ImageButton moviePoster1 = (ImageButton) myView.findViewById(R.id.moviePosterButton1);
         moviePoster1.setImageResource(0);
         new DownloadImageTask(moviePoster1)
-                .execute(home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
+                .execute(home.allFilmObjectsArray.get(0).getImg().replaceAll("\\\\", ""));
         movieReference = 1;
         ImageButton moviePoster2 = (ImageButton) myView.findViewById(R.id.moviePosterButton2);
         moviePoster2.setImageResource(0);
@@ -55,6 +66,7 @@ public class FilmListScreenFragment extends Fragment{
                 .execute(home.allFilmObjectsArray.get(3).getImg().replaceAll("\\\\", ""));
 
 
+*/
 
         return myView;
 

@@ -43,41 +43,53 @@ public class FilmScreenFragment extends Fragment {
 
     String textOut = "Loading";
     //edit movieID to decide which movie should be shown
-    String movieID = "2";
+
+
 //    ImageView moviePoster;
     FloatingActionButton floatingBtnFav, floatingBtnShare;
     String videoID, userName, imagePoster, filmDesc;
     TextView movieDescriptionTextView;
     Boolean loadFavourite;
-    int i, ratingFilm;
+    int i, ratingFilm, movieReference;
+    String movieID;
 
 
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         userName = "no";
+        Bundle bundle2 = this.getArguments();
+        if (bundle2 != null) {
+//            movieReference = bundle2.getInt("film", 1);
+            movieReference = bundle2.getInt("film", 1);
 
-        int movieReference = 1;
+           movieReference = movieReference - 1;
+
+            Log.d("Film Screen id init", Integer.toString(movieReference));
+        } else {
+            Log.d("Film Screen id init2", Integer.toString(movieReference));
+        }
+        Log.d("Film Screen id", Integer.toString(movieReference));
         //get HomeActivity context
         HomeActivity home = (HomeActivity) getActivity();
 
         myView = inflater.inflate(R.layout.film_layout, container, false);
 
         loadFavourite = false;
-        try {
-            Bundle bundle = this.getArguments();
-            if (bundle != null) {
-                i = bundle.getInt("fave", 1);
-            }
-            if (i==1) {
-                loadFavourite = true;
-            }
-        } catch (NullPointerException e ){
-            loadFavourite = false;
-        }
-        //For Favourite
-        imagePoster = home.allFilmObjectsArray.get(movieReference).getImg();
-        ratingFilm = home.allFilmObjectsArray.get(movieReference).getRating();
-        filmDesc = home.allFilmObjectsArray.get(movieReference).getDescription();
+//        try {
+//            Bundle bundle = this.getArguments();
+//            if (bundle != null) {
+//                i = bundle.getInt("fave", 1);
+//            }
+//            if (i==1) {
+//                loadFavourite = true;
+//            }
+//        } catch (NullPointerException e ){
+//            loadFavourite = false;
+//        }
+//        //For Favourite
+//        imagePoster = home.allFilmObjectsArray.get(movieReference).getImg();
+//        ratingFilm = home.allFilmObjectsArray.get(movieReference).getRating();
+//        filmDesc = home.allFilmObjectsArray.get(movieReference).getDescription();
 
         if (loadFavourite){
             SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);
@@ -122,11 +134,14 @@ public class FilmScreenFragment extends Fragment {
             });
 
         } else {
+            Log.d("Film Stestsetset", Integer.toString(movieReference));
             //POSTER IMAGE
             ImageView moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
             moviePoster.setImageResource(0);
             new DownloadImageTask(moviePoster)
                     .execute(home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
+            Log.i("jitz", "jhfvbsjdfv");
+            Log.i("jitz", ""+home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
 
             //RATING
             RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
@@ -164,13 +179,14 @@ public class FilmScreenFragment extends Fragment {
     //Async task to load the movie poster
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
-
         public DownloadImageTask(ImageView bmImage) {
             this.bmImage = bmImage;
+            Log.d("TEST1","");
         }
 
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
+            Log.d("URL", urldisplay);
             Bitmap mIcon11 = null;
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
