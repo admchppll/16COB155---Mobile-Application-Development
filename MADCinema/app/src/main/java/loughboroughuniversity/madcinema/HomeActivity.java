@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,6 +58,7 @@ public class HomeActivity extends AppCompatActivity
 
         //GET DATA
         //-location data
+
         FetchLocationData locationsGet = new FetchLocationData();
         locationsGet.execute();
 
@@ -149,30 +151,30 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new HomeScreenFragment())
+                            , new HomeScreenFragment()).addToBackStack( "tag1" )
                     .commit();
         } else if (id == R.id.nav_film) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new FilmScreenFragment())
+                            , new FilmScreenFragment()).addToBackStack( "tag1" )
                     .commit();
 
         } else if (id == R.id.nav_films_list) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new FilmListScreenFragment())
+                            , new FilmListScreenFragment()).addToBackStack( "tag1" )
                     .commit();
 
         } else if (id == R.id.nav_locations) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new LocationScreenFragment())
+                            , new LocationScreenFragment()).addToBackStack( "tag1" )
                     .commit();
 
         } else if (id == R.id.nav_timetables) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new TimetableScreenFragment())
+                            , new TimetableScreenFragment()).addToBackStack( "tag1" )
                     .commit();
         } else if (id == R.id.favourite) {
             Bundle bundle = new Bundle();
@@ -181,12 +183,12 @@ public class HomeActivity extends AppCompatActivity
             fragmentFavourite.setArguments(bundle);
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , fragmentFavourite)
+                            , fragmentFavourite).addToBackStack( "tag1" )
                     .commit();
         } else if (id == R.id.user_guide) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new UserGuideFragment())
+                            , new UserGuideFragment()).addToBackStack( "tag1" )
                     .commit();
         }
 
