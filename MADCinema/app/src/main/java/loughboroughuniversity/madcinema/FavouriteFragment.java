@@ -1,115 +1,76 @@
 package loughboroughuniversity.madcinema;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Created by darre_000 on 13/04/2017.
+ * Created by darre_000 on 18/05/2017.
  */
 
-public class FilmScreenFragment extends Fragment {
+public class FavouriteFragment  extends Fragment {
     View myView;
 
 
     String textOut = "Loading";
     //edit movieID to decide which movie should be shown
-
-
-//    ImageView moviePoster;
+    //    ImageView moviePoster;
     FloatingActionButton floatingBtnFav, floatingBtnShare;
     String videoID, userName, imagePoster, filmDesc, filmName;
     TextView movieDescriptionTextView;
     Boolean loadFavourite;
     int i, ratingFilm, movieReference;
     String movieID;
-
-
-    @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         userName = "no";
-        Bundle bundle2 = this.getArguments();
-        if (bundle2 != null) {
-//            movieReference = bundle2.getInt("film", 1);
-            movieReference = bundle2.getInt("film", 1);
 
-           movieReference = movieReference - 1;
-
-            Log.d("Film Screen id init", Integer.toString(movieReference));
-        } else {
-            Log.d("Film Screen id init2", Integer.toString(movieReference));
-        }
-        Log.d("Film Screen id", Integer.toString(movieReference));
         //get HomeActivity context
         HomeActivity home = (HomeActivity) getActivity();
 
-        myView = inflater.inflate(R.layout.film_layout, container, false);
+        myView = inflater.inflate(R.layout.favourite_layout, container, false);
 
-        imagePoster = home.allFilmObjectsArray.get(movieReference).getImg();
-        ratingFilm = home.allFilmObjectsArray.get(movieReference).getRating();
-        filmDesc = home.allFilmObjectsArray.get(movieReference).getDescription();
 
-        Log.d("Film Stestsetset", Integer.toString(movieReference));
+        SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);
+        imagePoster = myPref.getString("poster", "");
+        ratingFilm = myPref.getInt("rating", 0);
+        filmDesc = myPref.getString("description", "");
+        videoID = myPref.getString("filmVid", "");
+        filmName = myPref.getString("filmName", "");
+
+        getActivity().setTitle(filmName);
+
         //POSTER IMAGE
         ImageView moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
         moviePoster.setImageResource(0);
-        new DownloadImageTask(moviePoster)
-                .execute(home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
-        Log.i("jitz", "jhfvbsjdfv");
-        Log.i("jitz", ""+home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
+        new FavouriteFragment.DownloadImageTask(moviePoster)
+                .execute(imagePoster.replaceAll("\\\\", ""));
 
         //RATING
         RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
-        movieRatingBar.setRating(home.allFilmObjectsArray.get(movieReference).getRating()/2);
+        movieRatingBar.setRating(ratingFilm/2);
 
         //initiate and set movie decryption to a default description("Loading")
         movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
-        movieDescriptionTextView.setText(home.allFilmObjectsArray.get(movieReference).getDescription());
+        movieDescriptionTextView.setText(filmDesc);
 
         //Trailer Link
         videoID = home.allFilmObjectsArray.get(movieReference).getTrailer();
-
-        //Title
-        String title = home.allFilmObjectsArray.get(movieReference).getName();
-        try{
-            title = title.substring(0,20) + "...";
-        } catch (Exception e){
-            title = title;
-        }
-        getActivity().setTitle(title);
-        filmName = title;
 
         //set listener to floating share button
         floatingBtnShare = (FloatingActionButton) myView.findViewById(R.id.floatingBtnShare);
@@ -165,9 +126,6 @@ public class FilmScreenFragment extends Fragment {
 
 
     public void saveFilm() {
-        HomeActivity home = (HomeActivity) getActivity();
-        Toast.makeText(getActivity(),home.allFilmObjectsArray.get(movieReference).getName() + " is now your favourite film!", Toast.LENGTH_SHORT).show();
-
         SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);
         SharedPreferences.Editor myEditor = myPref.edit();
         myEditor.clear();
@@ -175,7 +133,6 @@ public class FilmScreenFragment extends Fragment {
         myEditor.putInt("rating", ratingFilm);// or putDouble, putString, etc…
         myEditor.putString("description", filmDesc);// or putDouble, putString, etc…
         myEditor.putString("filmVid", videoID);
-        myEditor.putString("filmName", filmName);
         myEditor.commit();
     }
 

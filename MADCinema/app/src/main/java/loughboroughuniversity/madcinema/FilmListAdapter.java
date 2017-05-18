@@ -89,7 +89,7 @@ public class FilmListAdapter extends ArrayAdapter<FilmObject> {
                 FragmentManager fragmentManager = ((Activity) context).getFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame
-                                , fragmentFavourite)
+                                , fragmentFavourite).addToBackStack( "tag2" )
                         .commit();
 
                 //do action here to redirect to

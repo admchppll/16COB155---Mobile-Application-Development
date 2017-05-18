@@ -73,6 +73,8 @@ public class TimetableScreenFragment extends Fragment {
             prefLocationName = home.locationArray.get(Integer.parseInt(locationPref)).getName();
         }
 
+        getActivity().setTitle("MAD Cinema");
+
         //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         FetchTimetableData timetableGet = new FetchTimetableData();
         timetableGet.execute();

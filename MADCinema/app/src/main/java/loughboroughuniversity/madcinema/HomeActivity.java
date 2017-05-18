@@ -153,12 +153,6 @@ public class HomeActivity extends AppCompatActivity
                     .replace(R.id.content_frame
                             , new HomeScreenFragment()).addToBackStack( "tag1" )
                     .commit();
-        } else if (id == R.id.nav_film) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame
-                            , new FilmScreenFragment()).addToBackStack( "tag1" )
-                    .commit();
-
         } else if (id == R.id.nav_films_list) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
@@ -177,13 +171,9 @@ public class HomeActivity extends AppCompatActivity
                             , new TimetableScreenFragment()).addToBackStack( "tag1" )
                     .commit();
         } else if (id == R.id.favourite) {
-            Bundle bundle = new Bundle();
-            bundle.putInt("fave", 1);
-            Fragment fragmentFavourite = new FilmScreenFragment();
-            fragmentFavourite.setArguments(bundle);
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , fragmentFavourite).addToBackStack( "tag1" )
+                            , new FavouriteFragment()).addToBackStack( "tag1" )
                     .commit();
         } else if (id == R.id.user_guide) {
             fragmentManager.beginTransaction()

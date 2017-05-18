@@ -33,6 +33,7 @@ public class FilmListScreenFragment extends Fragment{
         myView = inflater.inflate(R.layout.films_list_layout, container, false);
 
         home = (HomeActivity)getActivity();
+        getActivity().setTitle("MAD Cinema");
 
         ListView filmList = (ListView) myView.findViewById(R.id.filmList);
 

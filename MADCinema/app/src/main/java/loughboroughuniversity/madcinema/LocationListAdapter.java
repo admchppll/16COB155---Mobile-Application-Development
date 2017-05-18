@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -76,8 +77,8 @@ public class LocationListAdapter extends ArrayAdapter<LocationItem> {
                         editor.commit();
 
                         //remove button from screen
-                        button.setVisibility(View.INVISIBLE);
-                        button.setEnabled(false);
+//                        button.setVisibility(View.INVISIBLE);
+//                        button.setEnabled(false);
 
                         //set location as preferred in local data for later
                         //(only one preferred location so overwrite previous values)
@@ -89,6 +90,8 @@ public class LocationListAdapter extends ArrayAdapter<LocationItem> {
                                 home.locationArray.get(i).setNotPreferred();
                             }
                         }
+
+                        Toast.makeText(row.getContext(),"Location Confirmed!", Toast.LENGTH_SHORT).show();
                     }
                 });
                 alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

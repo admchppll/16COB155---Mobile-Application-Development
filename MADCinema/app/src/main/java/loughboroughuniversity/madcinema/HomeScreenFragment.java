@@ -30,6 +30,7 @@ public class HomeScreenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         myView = inflater.inflate(R.layout.home_screen_layout, container, false);
+        getActivity().setTitle("MAD Cinema");
         return myView;
 
     }

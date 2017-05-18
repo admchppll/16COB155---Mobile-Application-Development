@@ -6,9 +6,6 @@
             android:id="@+id/nav_home"
             android:title="Home" />
         <item
-            android:title="Film"
-            android:id="@+id/nav_film" />
-        <item
             android:id="@+id/nav_films_list"
             android:title="Films List" />
         <item
