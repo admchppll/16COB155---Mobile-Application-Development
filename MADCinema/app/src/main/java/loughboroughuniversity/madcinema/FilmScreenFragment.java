@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -45,8 +46,10 @@ public class FilmScreenFragment extends Fragment {
     String movieID = "2";
 //    ImageView moviePoster;
     FloatingActionButton floatingBtnFav, floatingBtnShare;
-    String videoID, userName, filmName;
+    String videoID, userName, imagePoster, filmDesc;
     TextView movieDescriptionTextView;
+    Boolean loadFavourite;
+    int i, ratingFilm;
 
 
     @Nullable
@@ -59,38 +62,101 @@ public class FilmScreenFragment extends Fragment {
 
         myView = inflater.inflate(R.layout.film_layout, container, false);
 
-        //POSTER IMAGE
-        ImageView moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
-        moviePoster.setImageResource(0);
-        new DownloadImageTask(moviePoster)
-                .execute(home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
-
-        //RATING
-        RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
-        movieRatingBar.setRating(home.allFilmObjectsArray.get(movieReference).getRating());
-
-        //initiate and set movie decryption to a default description("Loading")
-        movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
-        movieDescriptionTextView.setText(home.allFilmObjectsArray.get(movieReference).getDescription());
-
-
-        //set listener to floating share button
-        floatingBtnShare = (FloatingActionButton) myView.findViewById(R.id.floatingBtnShare);
-        floatingBtnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { //Writes Film to Phone
-                shareFilm();
+        loadFavourite = false;
+        try {
+            Bundle bundle = this.getArguments();
+            if (bundle != null) {
+                i = bundle.getInt("fave", 1);
             }
-        });
-
-        //set listener to floating favourite button
-        floatingBtnFav = (FloatingActionButton) myView.findViewById(R.id.floatingBtnFav);
-        floatingBtnFav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { //Writes Film to Phone
-                saveFilm();
+            if (i==1) {
+                loadFavourite = true;
             }
-        });
+        } catch (NullPointerException e ){
+            loadFavourite = false;
+        }
+        //For Favourite
+        imagePoster = home.allFilmObjectsArray.get(movieReference).getImg();
+        ratingFilm = home.allFilmObjectsArray.get(movieReference).getRating();
+        filmDesc = home.allFilmObjectsArray.get(movieReference).getDescription();
+
+        if (loadFavourite){
+            SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);
+            imagePoster = myPref.getString("poster", "");
+            ratingFilm = myPref.getInt("rating", 0);
+            filmDesc = myPref.getString("description", "");
+            videoID = myPref.getString("filmVid", "");
+
+            //POSTER IMAGE
+            ImageView moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
+            moviePoster.setImageResource(0);
+            new DownloadImageTask(moviePoster)
+                    .execute(imagePoster.replaceAll("\\\\", ""));
+
+            //RATING
+            RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
+            movieRatingBar.setRating(ratingFilm);
+
+            //initiate and set movie decryption to a default description("Loading")
+            movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
+            movieDescriptionTextView.setText(filmDesc);
+
+            //Trailer Link
+            videoID = home.allFilmObjectsArray.get(movieReference).getTrailer();
+
+            //set listener to floating share button
+            floatingBtnShare = (FloatingActionButton) myView.findViewById(R.id.floatingBtnShare);
+            floatingBtnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { //Writes Film to Phone
+                    shareFilm();
+                }
+            });
+
+            //set listener to floating favourite button
+            floatingBtnFav = (FloatingActionButton) myView.findViewById(R.id.floatingBtnFav);
+            floatingBtnFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { //Writes Film to Phone
+                    saveFilm();
+                }
+            });
+
+        } else {
+            //POSTER IMAGE
+            ImageView moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
+            moviePoster.setImageResource(0);
+            new DownloadImageTask(moviePoster)
+                    .execute(home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
+
+            //RATING
+            RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
+            movieRatingBar.setRating(home.allFilmObjectsArray.get(movieReference).getRating());
+
+            //initiate and set movie decryption to a default description("Loading")
+            movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
+            movieDescriptionTextView.setText(home.allFilmObjectsArray.get(movieReference).getDescription());
+
+            //Trailer Link
+            videoID = home.allFilmObjectsArray.get(movieReference).getTrailer();
+
+            //set listener to floating share button
+            floatingBtnShare = (FloatingActionButton) myView.findViewById(R.id.floatingBtnShare);
+            floatingBtnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { //Writes Film to Phone
+                    shareFilm();
+                }
+            });
+
+            //set listener to floating favourite button
+            floatingBtnFav = (FloatingActionButton) myView.findViewById(R.id.floatingBtnFav);
+            floatingBtnFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) { //Writes Film to Phone
+                    saveFilm();
+                }
+            });
+        }
 
         return myView;
     }
@@ -130,13 +196,11 @@ public class FilmScreenFragment extends Fragment {
         SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);
         SharedPreferences.Editor myEditor = myPref.edit();
         myEditor.clear();
-        myEditor.putString("filmname", filmName);// or putDouble, putString, etc…
+        myEditor.putString("poster", imagePoster);// or putDouble, putString, etc…
+        myEditor.putInt("rating", ratingFilm);// or putDouble, putString, etc…
+        myEditor.putString("description", filmDesc);// or putDouble, putString, etc…
+        myEditor.putString("filmVid", videoID);
         myEditor.commit();
-    }
-
-    public void loadFilm() {
-        SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);
-        userName = myPref.getString("filmname", "");
     }
 
     public void shareFilm() { //Share youtube video of film

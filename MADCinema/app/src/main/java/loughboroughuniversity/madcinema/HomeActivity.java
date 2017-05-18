@@ -2,6 +2,7 @@ package loughboroughuniversity.madcinema;
 
 import android.app.AlarmManager;
 import android.app.FragmentManager;
+import android.app.Fragment;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -174,10 +175,14 @@ public class HomeActivity extends AppCompatActivity
                             , new TimetableScreenFragment())
                     .commit();
         } else if (id == R.id.favourite) {
-//            fragmentManager.beginTransaction()
-//                    .replace(R.id.content_frame
-//                            , new TimetableScreenFragment())
-//                    .commit();
+            Bundle bundle = new Bundle();
+            bundle.putInt("fave", 1);
+            Fragment fragmentFavourite = new FilmScreenFragment();
+            fragmentFavourite.setArguments(bundle);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame
+                            , fragmentFavourite)
+                    .commit();
         } else if (id == R.id.user_guide) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
