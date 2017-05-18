@@ -43,13 +43,10 @@ public class FilmScreenFragment extends Fragment {
     String textOut = "Loading";
     //edit movieID to decide which movie should be shown
     String movieID = "2";
-    ImageView moviePoster;
-    Button btnFave, btnShare;
+//    ImageView moviePoster;
     FloatingActionButton floatingBtnFav, floatingBtnShare;
     String videoID, userName, filmName;
     TextView movieDescriptionTextView;
-
-
 
 
     @Nullable
@@ -58,12 +55,12 @@ public class FilmScreenFragment extends Fragment {
 
         int movieReference = 1;
         //get HomeActivity context
-        HomeActivity home = (HomeActivity)getActivity();
+        HomeActivity home = (HomeActivity) getActivity();
 
         myView = inflater.inflate(R.layout.film_layout, container, false);
 
-        //POSTER
-        moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
+        //POSTER IMAGE
+        ImageView moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
         moviePoster.setImageResource(0);
         new DownloadImageTask(moviePoster)
                 .execute(home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
@@ -72,12 +69,9 @@ public class FilmScreenFragment extends Fragment {
         RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
         movieRatingBar.setRating(home.allFilmObjectsArray.get(movieReference).getRating());
 
-        //initiate and set movie poster to a default image
-
-
         //initiate and set movie decryption to a default description("Loading")
         movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
-        movieDescriptionTextView.setText(textOut);
+        movieDescriptionTextView.setText(home.allFilmObjectsArray.get(movieReference).getDescription());
 
 
         //set listener to floating share button
@@ -98,12 +92,7 @@ public class FilmScreenFragment extends Fragment {
             }
         });
 
-//        GetMovieDetails movieDetails = new GetMovieDetails();
-//        movieDetails.execute();
-
-        Log.i("myTag", "about to return view");
         return myView;
-
     }
 
     //Async task to load the movie poster
@@ -136,105 +125,6 @@ public class FilmScreenFragment extends Fragment {
         }
     }
 
-    //async task that is called from DownloadImageTask
-    //to get movie details like name, description, poster URL...
-    public class GetMovieDetails extends AsyncTask<Void, Void, String> {
-
-        public String dynamic_movieDetailURL = "http://ac-portal.uk/mad/filmInfoDetailedOut.php?q=" + movieID;
-
-
-        protected String doInBackground(Void... params) {
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
-            Log.i("myTag", "doInBackground started");
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            // Will contain the raw JSON response as a string.
-            String resultJson = null;
-
-            try {
-                // Construct the URL
-                URL url = new URL(dynamic_movieDetailURL);
-
-                // Create the request and open the connection
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                // Read the input stream into a String
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    // Nothing to do.
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
-                    Log.i("myTag", "buffer.length() == 0");
-                    return null;
-                }
-                resultJson = buffer.toString();
-                Log.i("myTag", "returning resultJason ");
-                return resultJson;
-            } catch (IOException e) {
-                Log.e("PlaceholderFragment", "Error ", e);
-                // If the code didn't successfully get data
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    Log.i("myTag", "urlConnection != null");
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e("PlaceholderFragment", "Error closing stream", e);
-                    }
-                }
-            }
-
-        }
-
-        //onPostExecute of the GetMovieDetails async task
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            //reference all the objects
-            TextView movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
-//            RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
-
-            try {
-                JSONObject json = new JSONObject(s);
-                //add locations to list
-
-                JSONArray filmInfo = json.getJSONArray("filmInfo");
-                JSONObject movieDetailObject = filmInfo.getJSONObject(0);
-
-
-                textOut = movieDetailObject.getString("Description");
-                movieDescriptionTextView.setText(textOut);
-
-//                movieRatingBar.setRating(Float.valueOf(movieDetailObject.getString("Rating")));
-
-                videoID = movieDetailObject.getString("Trailer");
-
-//                new DownloadImageTask(moviePoster)
-//                        .execute(movieDetailObject.getString("Img").replaceAll("\\\\", ""));
-
-            } catch (JSONException e) {
-                Log.d("JSON Exception", e.getLocalizedMessage());
-            }
-            Log.i("json", s);
-        }
-    }
 
     public void saveFilm() {
         SharedPreferences myPref = getActivity().getSharedPreferences("fave_films", MODE_PRIVATE);

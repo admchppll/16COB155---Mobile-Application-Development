@@ -59,10 +59,10 @@ public class HomeActivity extends AppCompatActivity
         FetchLocationData locationsGet = new FetchLocationData();
         locationsGet.execute();
 
-        fetchMovieData movieDataGet = new fetchMovieData();
-        movieDataGet.execute();
 
         //-get all film data
+        fetchMovieData movieDataGet = new fetchMovieData();
+        movieDataGet.execute();
 
 
         setContentView(R.layout.activity_home);
@@ -254,23 +254,14 @@ public class HomeActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.i("jitz", "fetchMovieData->onPostExecute");
 
             try {
-                Log.i("jitz", s);
                 JSONObject allFilmsJson = new JSONObject(s);
                 JSONArray films = allFilmsJson.getJSONArray("films");
-                Log.i("jitz", "films: " + films.toString());
 
 //                JSONObject film;
                 for (int i = 0; i < films.length(); i++) {
                     JSONObject film = films.getJSONObject(i);
-                    Log.i("jitz", "film: " + film.toString());
-                    Log.i("jitz", "film.getString(\"name\"): " + film.getString("Name"));
-                    //create a temporary Film object that will then be added to an arrayList(allFilmsObjectArray)
-                    //temporary = new FilmObject();
-                    //set all the properties of temporary FilmObject
-                    // Log.i("TE","TEST");
                     FilmObject temporary = new FilmObject(Integer.parseInt(film.getString("ID")),
                             film.getString("Name"),
                             film.getString("Description"),
@@ -279,16 +270,13 @@ public class HomeActivity extends AppCompatActivity
                             film.getString("TrailerLink"),
                             film.getString("ImageLink")
                     );
-                    Log.i("jitz", temporary.getName());//this is not printing anything in the log why????
                     //add the temporary Film object to the arrayList(allFilmsObjectArray)
                     allFilmObjectsArray.add(temporary);
-                    Log.i("jitz2", "allFilmObjectsArray.get(0).getName()" + allFilmObjectsArray.get(0).getName());
                 }
 
             } catch (JSONException e) {
                 Log.d("JSON Exception", e.getLocalizedMessage());
             }
-            Log.i("json", s);
         }
     }
 
