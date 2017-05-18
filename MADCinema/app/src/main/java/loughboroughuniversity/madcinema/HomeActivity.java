@@ -262,22 +262,23 @@ public class HomeActivity extends AppCompatActivity
                 Log.i("jitz", "films: " + films.toString());
 
                 JSONObject film;
-                FilmObject temporary;
                 for (int i = 0; i < films.length(); i++) {
                     film = films.getJSONObject(i);
                     Log.i("jitz", "film: " + film.toString());
                     Log.i("jitz", "film.getString(\"name\")" + film.getString("Name"));
                     //create a temporary Film object that will then be added to an arrayList(allFilmsObjectArray)
-                    temporary = new FilmObject();
+                    //temporary = new FilmObject();
                     //set all the properties of temporary FilmObject
-                    temporary.id = Integer.parseInt(film.getString("ID"));
-                    temporary.name = film.getString("Name");
-                    temporary.description = film.getString("Description");
-                    temporary.rating = Integer.parseInt(film.getString("Rating"));
-                    temporary.age = Integer.parseInt(film.getString("Age"));
-                    temporary.trailer = film.getString("Trailer");
-                    temporary.img = film.getString("Img");
-                    Log.i("jitz", "--" + temporary.name);//this is not printing anything in the log why????
+                   // Log.i("TE","TEST");
+                    FilmObject temporary = new FilmObject(Integer.parseInt(film.getString("ID")),
+                            film.getString("Name"),
+                            film.getString("Description"),
+                            Integer.parseInt(film.getString("Rating")),
+                            Integer.parseInt(film.getString("Age")),
+                            film.getString("Trailer"),
+                            film.getString("Img")
+                    );
+                    Log.i("TEST",temporary.getName());//this is not printing anything in the log why????
                     //add the temporary Film object to the arrayList(allFilmsObjectArray)
                     allFilmObjectsArray.add(temporary);
                 }

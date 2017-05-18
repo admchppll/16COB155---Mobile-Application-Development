@@ -106,7 +106,7 @@ public class TimetableScreenFragment extends Fragment {
     public void formatJsonObject(){
         JSONArray timeArray = times;
         dateArray.clear();
-        String favouriteLocation = LocationItem.getName();
+        String favouriteLocation = "Haslegrave";
         for(int i= 0;i<timeArray.length();i++){
 
             JSONObject time = null;
@@ -148,7 +148,7 @@ public class TimetableScreenFragment extends Fragment {
         JSONArray timeArray = times;
         timetableArray = new ArrayList<String>();
         timetableSubArray = new ArrayList<String>();
-        String favouriteLocation = LocationItem.getName();
+        String favouriteLocation = "Haslegrave";
         JSONObject time = null;
         try {
             int currentTimeInt = 0;
