@@ -50,15 +50,30 @@ public class FilmScreenFragment extends Fragment {
     TextView movieDescriptionTextView;
 
 
+
+
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         userName = "no";
 
+        int movieReference = 1;
+        //get HomeActivity context
+        HomeActivity home = (HomeActivity)getActivity();
+
         myView = inflater.inflate(R.layout.film_layout, container, false);
 
-        //initiate and set movie poster to a default image
+        //POSTER
         moviePoster = (ImageView) myView.findViewById(R.id.moviePosterImgView);
         moviePoster.setImageResource(0);
+        new DownloadImageTask(moviePoster)
+                .execute(home.allFilmObjectsArray.get(movieReference).getImg().replaceAll("\\\\", ""));
+
+        //RATING
+        RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
+        movieRatingBar.setRating(home.allFilmObjectsArray.get(movieReference).getRating());
+
+        //initiate and set movie poster to a default image
+
 
         //initiate and set movie decryption to a default description("Loading")
         movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
@@ -83,8 +98,8 @@ public class FilmScreenFragment extends Fragment {
             }
         });
 
-        GetMovieDetails movieDetails = new GetMovieDetails();
-        movieDetails.execute();
+//        GetMovieDetails movieDetails = new GetMovieDetails();
+//        movieDetails.execute();
 
         Log.i("myTag", "about to return view");
         return myView;
@@ -194,7 +209,7 @@ public class FilmScreenFragment extends Fragment {
             super.onPostExecute(s);
             //reference all the objects
             TextView movieDescriptionTextView = (TextView) myView.findViewById(R.id.movieDescriptionTextView);
-            RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
+//            RatingBar movieRatingBar = (RatingBar) myView.findViewById(R.id.movieRatingBar);
 
             try {
                 JSONObject json = new JSONObject(s);
@@ -207,12 +222,12 @@ public class FilmScreenFragment extends Fragment {
                 textOut = movieDetailObject.getString("Description");
                 movieDescriptionTextView.setText(textOut);
 
-                movieRatingBar.setRating(Float.valueOf(movieDetailObject.getString("Rating")));
+//                movieRatingBar.setRating(Float.valueOf(movieDetailObject.getString("Rating")));
 
                 videoID = movieDetailObject.getString("Trailer");
 
-                new DownloadImageTask(moviePoster)
-                        .execute(movieDetailObject.getString("Img").replaceAll("\\\\", ""));
+//                new DownloadImageTask(moviePoster)
+//                        .execute(movieDetailObject.getString("Img").replaceAll("\\\\", ""));
 
             } catch (JSONException e) {
                 Log.d("JSON Exception", e.getLocalizedMessage());
@@ -240,6 +255,6 @@ public class FilmScreenFragment extends Fragment {
         String shareBodyText = "Check out this films trailer! https://www.youtube.com/watch?v=" + videoID;
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Film Trailer!");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
-        startActivity(Intent.createChooser(sharingIntent, "Shearing Option"));
+        startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
     }
 }
