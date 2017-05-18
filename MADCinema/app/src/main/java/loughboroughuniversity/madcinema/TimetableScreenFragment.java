@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static android.content.Context.MODE_PRIVATE;
 import static loughboroughuniversity.madcinema.R.*;
 import static loughboroughuniversity.madcinema.R.layout.timetable_layout;
 
@@ -55,13 +56,22 @@ public class TimetableScreenFragment extends Fragment {
     public ArrayList<String> timetableArray = new ArrayList<String>();
     public ArrayList<String> timetableSubArray = new ArrayList<String>();
     JSONArray times = new JSONArray();
-
+    String locationPref;
+    String prefLocationName;
     int currentDateValue = 0;
     TextView dateOut;
     @Nullable
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         myView = inflater.inflate(timetable_layout, container, false);
+        HomeActivity home = (HomeActivity)getActivity();
+        locationPref = home.getSharedPreferences("pref_location", MODE_PRIVATE).getString("locationID", "");
+        prefLocationName= "";
+        if (locationPref.trim().equals("")){
+            prefLocationName ="";
+        }else {
+            prefLocationName = home.locationArray.get(Integer.parseInt(locationPref)).getName();
+        }
 
         //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         FetchTimetableData timetableGet = new FetchTimetableData();
@@ -106,7 +116,7 @@ public class TimetableScreenFragment extends Fragment {
     public void formatJsonObject(){
         JSONArray timeArray = times;
         dateArray.clear();
-        String favouriteLocation = "Haslegrave";
+        String favouriteLocation = prefLocationName;
         for(int i= 0;i<timeArray.length();i++){
 
             JSONObject time = null;
@@ -148,7 +158,7 @@ public class TimetableScreenFragment extends Fragment {
         JSONArray timeArray = times;
         timetableArray = new ArrayList<String>();
         timetableSubArray = new ArrayList<String>();
-        String favouriteLocation = "Haslegrave";
+        String favouriteLocation = prefLocationName;
         JSONObject time = null;
         try {
             int currentTimeInt = 0;
@@ -357,8 +367,6 @@ public class TimetableScreenFragment extends Fragment {
             } catch (JSONException e){
                 Log.d("JSON Exception", e.getLocalizedMessage());
             }
-
-            Log.i("json", s);
         }
     }
 
