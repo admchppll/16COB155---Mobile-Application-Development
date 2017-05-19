@@ -1,0 +1,169 @@
+<html>
+
+<head>
+    <title>User Guide - MAD Cinema</title>
+    <meta name=“viewport” content=“width=device-width, initial-scale=1”>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin:0;
+        }
+
+        .nav_li a {
+            display: block;
+            color: #000;
+            padding:16px;
+            text-decoration: none;
+        }
+
+            /* Change the link color on hover */
+        .nav_li a:hover {
+            background-color: #555;
+            color: white;   
+        }
+
+        main {
+            padding: 8px;
+        }
+
+        @media screen and (max-width:768px){
+            #nav {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                background-color: #f1f1f1;
+            }            
+        }
+
+        @media screen and (min-width:769px){
+            #nav {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                width: 25%;
+                background-color: #f1f1f1;
+                position: fixed;
+                height: 100vh;
+                overflow: auto;
+            }
+
+            main{
+                margin-left:25%;
+                height:1000px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+        <ul id="nav">
+            <li class="nav_li">
+                <a href="#Introduction">Introduction</a>
+            </li>
+            <li class="nav_li">
+                <a href="#Home">Home</a>
+            </li>
+            <li class="nav_li">
+                <a href="#FilmList">Film List</a>
+            </li>
+            <li class="nav_li">
+                <a href="#Film">Film</a>  
+            </li>
+			<li class="nav_li">
+                <a href="#Favourite">Favourite</a>
+            </li>
+            <li class="nav_li">
+                <a href="#Locations">Locations</a>
+            </li>
+            <li class="nav_li">
+                <a href="#Timetables">Timetables</a>
+            </li>
+        </ul>
+    <main>
+        <h1>User Guide</h1>
+        <section id="Introduction">
+            <h2>Introduction</h2>
+            <p>
+                Welcome to the MAD Cinema Android App.<br/><br/> As an independent chain of cinema, we strive to give our
+                customers (you) the best cinema experience possible and we believe this begins before you step foot through
+                the front door. We hope this app can help improve that experience for you.<br/><br/> This page should provide
+                you with information on how to use the features of this app.
+            </p>
+        </section>
+        <section id="Home">
+            <h2>Home</h2>
+            <p>This screen welcomes the users to the application</p>
+        </section>
+        <section id="FilmList">
+            <h2>Film List</h2>
+            <p>This screen lists all the films that are currently on our database</p>
+        </section>
+        <section id="Film">
+            <h2>Film</h2>
+            <p>This screen is where you can get more information on a specific film that takes your eye. From here you can:
+				<ul>
+					<li>View the films release poster</li>
+					<li>Read a description of the film</li>
+					<li>Find a star rating of what others think of the film</li>    
+					<li>Share the film with your friends</li>
+					<li>Favourite the film so you can comeback to it at a later point</li>
+				</ul>
+			</p>
+			<section id="Film-Share">
+				<h3>How do I share the film?</h3>
+				<p>
+					Sharing couldn't be simpler! To make it easier for you to make plans with your friends, or even make suggestions to films they might like to see, 
+					we added an easy to use button that helps you do this through almost any app you need; Whatsapp, Facebook,Twitter...you name it!
+				</p>
+				<p>
+					Simply click the button seen above and you should be presented with an option of the available applications, as seen below, you can use to share the film. Select the one you want and you will be taken to that application to complete the functionality.
+				</p>
+			</section>
+			<section id="Film-Favourite">
+				<h3>How do I favourite a film?</h3>
+				<p>
+					Again, to make it as simple as possible for you to get the most of the application we have created the ability for you to favourite a film, so that you can easily find it again later. 
+				</p>
+				<p>
+					To favourite the film click the button seen above on the page and this will be saved on your phone for next time you want to access the app. To find the film again later, from the menu select simply select <b>Favourite</b>, this will take you back to the film details.
+				</p>
+			</section>	
+        </section>
+		<section id="Favourite">
+            <h2>Favourite</h2>
+            <p>This page is identical to the film page, showing the same details however removing the set favourite button. Please refer to this section for more details.</p>
+			<a href="#Film">Go To Film Section</a>
+        </section>
+        <section id="Locations">
+            <h2>Locations</h2>
+            <p>From this screen you are able to:
+				<ul>
+					<li>See a list of all our locations</li>
+					<li>Set a preferred location, so all films in the timetable are specific to the cinema you are most likely to attend. Once set, you will not have set it again unless you wish to change your preference</li>
+					<li>Find the location of the cinemas in the Google Maps with a single click</li>
+				</ul>
+			</p>
+			<section>
+				<h3>How do I set my preferred location?</h3>
+                <p>
+					This couldn't be simpler, simply click the location pin icon, shown below, next to the location you would like to select and this will be set and to make sure you didn't do this accidentally you will be asked to confirm this action.
+				</p>
+			</section>
+			<section>
+				<h3>How do I find the location of the cinema?</h3>
+				<p>
+					Again, this couldn't be simpler, simply click the map icon, shown below, next to the location pin on the item you would like to select and this will open the google maps application set the location of the cinema.
+				</p>
+			</section>
+        </section>
+        <section id="Timetables">
+            <h2>Timetables</h2>
+            <p>This screen allows you to view the times of all films shown at your preferred location, or all locations if you haven't gotten round to setting one yet (Go to <a href="#Locations">Locations</a> to find out how).</p>
+			<p>To change the dates that the times are shown for simply select 'PREV' or 'NEXT' next to the date. <b>Hint:</b> You can also do this by swiping horizontally across the screen.
+        </section>
+    </main>
+</body>
+
+</html>
