@@ -72,13 +72,13 @@ public class DownloadService extends Service {
 
         return super.onStartCommand(intent, flags, startId);
     }
-    public void sendNotification() {
+    public void sendNotification(String textOut) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_stat_name)
                         .setContentTitle("MAD Cinema")
-                        .setContentText("New movie might of been released today!");
+                        .setContentText(textOut);
 
         Intent resultIntent = new Intent(this, HomeActivity.class);
         resultIntent.putExtra(EXTRA_FILM, "FILM");
@@ -177,9 +177,15 @@ public class DownloadService extends Service {
             Date date = new Date();
             String currentDate = dateFormat.format(date).toString();
             //Need if statement to find if new film released
-            for(int k=0; k< dateFilmArray.length; k++ ){
-                if (dateFilmArray[k].equals(currentDate)){
-                    sendNotification();
+            if (dateFilmArray.length == 0){
+                sendNotification("View our wide variety of films!");
+            } else {
+                for (int k = 0; k < dateFilmArray.length; k++) {
+                    if (dateFilmArray[k].equals(currentDate)) {
+                        sendNotification("A New film has been released");
+                    } else {
+                        sendNotification("View our wide variety of films!");
+                    }
                 }
             }
         }

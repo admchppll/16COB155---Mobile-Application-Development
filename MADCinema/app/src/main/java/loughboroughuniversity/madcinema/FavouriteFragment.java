@@ -53,6 +53,13 @@ public class FavouriteFragment  extends Fragment {
         videoID = myPref.getString("filmVid", "");
         filmName = myPref.getString("filmName", "");
 
+        if (filmName == ""){
+            filmName = "Favourite";
+        }
+        if (filmDesc == ""){
+            filmDesc = "No Favourite";
+        }
+
         getActivity().setTitle(filmName);
 
         //POSTER IMAGE

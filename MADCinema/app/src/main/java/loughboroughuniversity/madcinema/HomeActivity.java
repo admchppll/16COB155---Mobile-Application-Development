@@ -99,7 +99,7 @@ public class HomeActivity extends AppCompatActivity
         PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
         AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-                5 * 1000, pintent);
+                60 * 60 * 24 * 1000, pintent); //Every 24 Hours
 
     }
 
